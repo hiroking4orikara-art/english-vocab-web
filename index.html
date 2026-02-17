@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中学　英語　教科書　単語　サックサク！</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts for a modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<script>
+    window.onerror = function(msg, url, line, col, error) {
+        alert("Error: " + msg + "\nLine: " + line + "\nCol: " + col);
+    };
+    window.addEventListener('unhandledrejection', function(event) {
+        alert("Unhandled Promise Rejection: " + event.reason);
+    });
+</script>
+
+<body>
+    <header>
+        <h1>中学　英語　教科書　単語　サックサク！</h1>
+        <button id="settings-btn" style="display: none;">⚙️</button>
+    </header>
+
+    <main>
+        <!-- 1. Textbook & Grade Selection -->
+        <div id="setup-screen" class="screen active">
+            <h2>教科書を選んでね</h2>
+            <div class="selection-group">
+                <button class="textbook-btn" data-textbook="new_crown">New Crown</button>
+                <button class="textbook-btn" data-textbook="here_we_go">Here We Go</button>
+            </div>
+
+            <div id="grade-selection" class="hidden">
+                <h2>学年を選んでね</h2>
+                <div class="selection-group">
+                    <button class="grade-btn" data-grade="1">中学1年生</button>
+                    <button class="grade-btn" data-grade="2">中学2年生</button>
+                    <button class="grade-btn" data-grade="3">中学3年生</button>
+                </div>
+            </div>
+
+            <button id="goto-unit-btn" class="primary-btn" disabled>単元を選択へ</button>
+
+            <!-- Cross Promo -->
+            <div style="margin-top: 30px; text-align: center;">
+                <p style="font-size: 0.9rem; color: #555; margin-bottom: 5px;">＼ 姉妹アプリもよろしくね！ ／</p>
+                <a href="https://play.google.com/store/apps/details?id=com.hiroki.grammar" target="_blank" style="text-decoration: none; display: inline-block;">
+                    <button class="promo-btn" style="background: white; border: 2px solid #FFD54F; padding: 10px; border-radius: 15px; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <img src="assets/grammar_icon.png" alt="Grammar 300" style="width: 50px; height: 50px; border-radius: 10px;">
+                        <div style="text-align: left;">
+                            <div style="font-weight: bold; color: #333; font-size: 1rem;">中学 英語 並べ替え300</div>
+                            <div style="font-size: 0.8rem; color: #666;">文法の総復習に最適！</div>
+                        </div>
+                    </button>
+                </a>
+            </div>
+        </div>
+
+        <!-- 2. Unit Selection -->
+        <div id="unit-selection-screen" class="screen hidden">
+
+            <div class="unit-selection-grid">
+                <!-- Left Column: Header + List -->
+                <div class="units-column">
+                    <div class="screen-header-stack">
+                        <button id="back-to-setup" class="secondary-btn small-btn">選択画面へ</button>
+                        <h2 id="unit-screen-title">単元を選んでね</h2>
+                    </div>
+                    <div id="units-container" class="units-list">
+                        <!-- Checkboxes will be injected here via JS -->
+                    </div>
+                </div>
+
+                <!-- Right Column: Actions -->
+                <div class="action-panel">
+                    <div id="total-words-display">0 単語</div>
+                    <div id="start-buttons-container" class="action-buttons">
+                        <button id="start-choice-btn" class="primary-btn" disabled>三択に挑戦</button>
+                        <button id="start-sort-btn" class="primary-btn sort-theme" disabled>並べ替え</button>
+                    </div>
+                    <!-- Usage Guide Button -->
+                    <button id="usage-guide-btn" class="text-btn"
+                        style="margin-top:10px; font-size: 0.9rem;">使い方を見る</button>
+                    
+                    <!-- Cycle 13: Irregular Verbs -->
+                    <div style="margin-top: 1rem; width: 100%; display: flex; flex-direction: column; gap: 0.5rem;">
+                        <button id="challenge-past-btn" class="primary-btn sort-theme" style="font-size: 1rem; padding: 0.8rem; background-color: #FFB6C1; border-color: #FFB6C1; color: #fff;">過去形の並べ替えに挑戦</button>
+                        <button id="challenge-pp-btn" class="primary-btn sort-theme" style="font-size: 1rem; padding: 0.8rem; background-color: #FFB6C1; border-color: #FFB6C1; color: #fff;">過去分詞の並べ替えに挑戦</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cycle 9: Navigation Footer -->
+            <footer class="app-footer">
+                <button id="nav-calendar-btn" class="nav-icon-btn">
+                    <img src="calendar_icon.png" alt="Calendar" class="nav-icon">
+                    <span class="nav-label">カレンダー</span>
+                </button>
+                <div class="user-nav-container">
+                    <button id="nav-user-btn" class="nav-icon-btn">
+                        <span class="user-avatar-placeholder">👤</span>
+                        <span id="current-user-name" class="nav-label">Guest</span>
+                    </button>
+                    <!-- User Menu Popup (Hidden by default) -->
+                    <div id="user-menu-popup" class="user-menu hidden">
+                        <ul id="user-list">
+                            <!-- Users injected here -->
+                        </ul>
+                        <button id="add-new-user-btn" class="add-user-btn">＋ 新規追加</button>
+                    </div>
+                </div>
+                <button id="nav-stats-btn" class="nav-icon-btn">
+                    <span class="nav-icon-emoji">📖</span>
+                    <span class="nav-label">学習の記録</span>
+                </button>
+                <button id="nav-print-btn" class="nav-icon-btn">
+                    <span class="nav-icon-emoji">🖨️</span>
+                    <span class="nav-label">印刷</span>
+                </button>
+            </footer>
+        </div>
+
+        <!-- 3. Quiz Interface -->
+        <div id="quiz-screen" class="screen hidden">
+            <div class="quiz-progress">
+                <span id="question-counter">Question 1 / 10</span>
+                <button id="reset-sort-btn" class="secondary-btn hidden" style="padding: 0.3rem 0.8rem; font-size: 0.9rem;">リセット</button>
+                <button id="quit-quiz-btn" class="text-btn">やめる</button>
+            </div>
+
+            <div id="question-container">
+                <!-- Question content goes here -->
+                <div class="question-header">
+                    <h2 id="question-text">dog</h2>
+                    <button id="audio-btn" class="audio-btn hidden" aria-label="Play Audio">🔊</button>
+                </div>
+                <!-- For sorting: underscores will be here -->
+                <div id="sorting-area"></div>
+            </div>
+
+            <div id="answer-options" class="options-grid">
+                <!-- Buttons for answers or letter chips for sorting -->
+            </div>
+
+            <div id="feedback-area" class="hidden">
+                <p id="feedback-message"></p>
+                <p id="feedback-explanation" class="explanation"></p>
+                <button id="next-question-btn" class="primary-btn">次へ</button>
+            </div>
+        </div>
+
+        <!-- 4. Results -->
+        <div id="result-screen" class="screen hidden">
+            <h2>結果発表！</h2>
+            <div class="score-display">
+                <span id="score-count">0</span> / 10
+            </div>
+            <p id="score-message">Nice try!</p>
+
+            <div id="wrong-answer-section" class="hidden">
+                <h3>間違えた単語</h3>
+                <ul id="wrong-questions-list" class="wrong-list">
+                    <!-- Injected via JS -->
+                </ul>
+                <button id="start-review-btn" class="primary-btn sort-theme">間違えた問題を復習する</button>
+            </div>
+
+            <div class="action-buttons">
+                <button id="retry-btn" class="secondary-btn">もう一度</button>
+                <button id="back-to-units-btn" class="primary-btn">単元選択に戻る</button>
+            </div>
+        </div>
+        <!-- 5. Stats Screen (Cycle 9) -->
+        <div id="stats-screen" class="screen hidden">
+            <div class="screen-header-stack">
+                <button id="back-from-stats" class="secondary-btn small-btn">戻る</button>
+                <h2>学習の記録</h2>
+                <button id="reset-stats-btn" class="text-btn danger-text" style="position: absolute; right: 0; top: 0; font-size: 0.8rem; color: #E53935;">学習の記録のリセット</button>
+            </div>
+
+            <!-- Mini-selection for Stats -->
+            <div class="stats-filter">
+                <div class="filter-row">
+                    <span>教科書:</span>
+                    <select id="stats-textbook-select">
+                        <option value="new_crown">New Crown</option>
+                        <option value="here_we_go">Here We Go</option>
+                    </select>
+                </div>
+                <div class="filter-row">
+                    <span>学年:</span>
+                    <select id="stats-grade-select">
+                        <option value="1">中学1年</option>
+                        <option value="2">中学2年</option>
+                        <option value="3">中学3年</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Stats Content -->
+            <div id="stats-content" class="stats-list">
+                <!-- Injected via JS -->
+                <p>データ読み込み中...</p>
+            </div>
+        </div>
+
+        <!-- 7. Usage Modal (Cycle 11) -->
+        <div id="usage-modal" class="modal hidden">
+            <div class="modal-content">
+                <span id="close-usage-btn" class="close-btn">&times;</span>
+                <h3 style="text-align:center; color: var(--primary-color);">アプリの使い方</h3>
+                <div class="usage-content" style="text-align:left; padding: 10px;">
+                    <p><strong>1. クイズに挑戦！</strong><br>
+                        1回につき10問出題されます。<br>
+                        「三択」と「並べ替え」を選べます。</p>
+
+                    <p><strong>2. 復習機能</strong><br>
+                        間違えた問題は、結果画面からすぐに復習できます。</p>
+
+                    <p><strong>3. アイコンの説明</strong></p>
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:5px;">
+                        <span>📅</span> <span>カレンダー: 学習した日を記録</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:5px;">
+                        <span>👤</span> <span>ユーザー切替: 家族で使えます</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span>📖</span> <span>学習記録: 進捗率を確認</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. Calendar Modal (Cycle 9) -->
+        <div id="calendar-modal" class="modal hidden">
+            <div class="modal-content">
+                <span id="close-calendar-modal" class="close-btn">&times;</span>
+                <h2>学習カレンダー</h2>
+                <div class="calendar-controls">
+                    <button id="prev-month-btn" class="icon-text-btn">&lt;</button>
+                    <span id="calendar-month-label">2026年 1月</span>
+                    <button id="next-month-btn" class="icon-text-btn">&gt;</button>
+                </div>
+                <div id="calendar-grid" class="calendar-grid">
+                    <!-- Dates -->
+                </div>
+                <p class="calendar-legend">数字は今日解いた問題数です</p>
+            </div>
+        </div>
+
+
+        <!-- 8. Print Modal -->
+        <div id="print-modal" class="modal hidden">
+            <div class="modal-content">
+                <span id="close-print-modal" class="close-btn">&times;</span>
+                <h3>プリントを作成</h3>
+                <p style="margin-bottom: 15px; font-size: 0.9rem;">印刷プレビューが開きます。<br>「PDFに保存」も可能です。</p>
+                
+                <!-- Shuffle Option -->
+                <div style="margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <input type="checkbox" id="print-shuffle-checkbox" style="transform: scale(1.5);">
+                    <label for="print-shuffle-checkbox" style="font-size: 1rem; cursor: pointer;">問題の順序をシャッフルする</label>
+                </div>
+
+                <div class="print-options">
+                    <button id="print-past-btn" class="primary-btn sort-theme" style="margin-bottom: 10px; width: 100%;">不規則動詞 (過去形)</button>
+                    <button id="print-pp-btn" class="primary-btn sort-theme" style="margin-bottom: 10px; width: 100%;">不規則動詞 (過去分詞)</button>
+                    <button id="print-unit-btn" class="primary-btn" style="width: 100%;">選択した単元 (英単語)</button>
+                    <!-- Close Button for clarity -->
+                    <button id="close-print-btn-main" class="primary-btn" style="margin-top: 20px; width: 100%; background-color: #f44336; border-color: #d32f2f;">閉じる</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Print Area (Hidden usually, visible on print) -->
+        <div id="print-area" class="print-only">
+            <!-- Content injected via JS -->
+        </div>
+
+    </main>
+
+    <script type="module" src="data.js"></script>
+    <script type="module" src="script.js"></script>
+
+    <!-- Mascot Container -->
+    <div id="mascot-container">
+        <div id="mascot-speech-bubble" class="hidden">Good luck!</div>
+        <img id="mascot-img" src="assets/mascot.png" alt="Mukku">
+    </div>
+</body>
+
+</html>

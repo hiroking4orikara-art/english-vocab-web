@@ -1,0 +1,17 @@
+{
+  "name": "english-textbook-vocab-web",
+  "version": "1.0.0",
+  "description": "Web version of English Textbook Vocab",
+  "scripts": {
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {},
+  "devDependencies": {
+    "vite": "^7.3.1"
+  }
+}
